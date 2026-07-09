@@ -1,0 +1,12 @@
+# 版權：原文 PDF 含 Elsevier 版權浮水印，預設不上傳（私人 repo 自用可自行移除此行）
+*.pdf
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 編輯器 / 相依套件
+node_modules/
+.vscode/
+*.log

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem | ForEach-Object { $_.Name + ' | ' + $_.Length })",
+      "PowerShell(python -c \"from pypdf import PdfReader; r = PdfReader\\('An International Consensus List of Potentially Clinically Significant Drug-Drug.pdf'\\); print\\(len\\(r.pages\\)\\)\")",
+      "PowerShell(pip install pypdf pdfplumber --quiet)",
+      "PowerShell(node \"C:\\\\Users\\\\user\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-user-Downloads-For-Claude-code-Project-drug-drug-interaction\\\\27e3991d-c1bf-49bc-81e6-4ae2118e0754\\\\scratchpad\\\\test.js\")",
+      "Bash(gh auth *)",
+      "Bash(git --version)",
+      "PowerShell($g = Get-Command gh -ErrorAction SilentlyContinue; if \\($g\\) { \"gh: \" + $g.Source; gh auth status } else { \"gh not found\" }; \"---\"; \"user.name: \" + \\(git config --global user.name\\); \"user.email: \" + \\(git config --global user.email\\))",
+      "Bash(git init *)",
+      "Bash(git config *)",
+      "Bash(git add *)"
+    ]
+  }
+}

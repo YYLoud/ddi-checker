@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>藥物交互作用檢核 (DDI Checker)</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --card:#fff; --ink:#1f2933; --muted:#6b7684; --line:#e3e8ef;
+    --brand:#2563eb; --brand-d:#1e40af;
+    --sev4:#dc2626; --sev4-bg:#fef2f2; --sev4-line:#fecaca;
+    --sev3:#d97706; --sev3-bg:#fffbeb; --sev3-line:#fde68a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI","Microsoft JhengHei",system-ui,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.6}
+  .wrap{max-width:880px;margin:0 auto;padding:24px 18px 60px}
+  header h1{font-size:1.5rem;margin:0 0 4px}
+  header p{margin:0;color:var(--muted);font-size:.9rem}
+  .disclaimer{background:#fff7ed;border:1px solid var(--sev3-line);color:#92400e;
+       border-radius:10px;padding:10px 14px;font-size:.82rem;margin:16px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;
+       padding:18px;margin-bottom:18px;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+  label.field-label{font-weight:600;font-size:.92rem;display:block;margin-bottom:6px}
+  .hint{color:var(--muted);font-size:.8rem;margin:0 0 10px}
+  textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;
+       padding:10px 12px;font-size:.95rem;font-family:inherit;resize:vertical}
+  textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  button{border:0;border-radius:10px;padding:10px 20px;font-size:.95rem;font-weight:600;
+       cursor:pointer;font-family:inherit}
+  .btn-primary{background:var(--brand);color:#fff}
+  .btn-primary:hover{background:var(--brand-d)}
+  .btn-ghost{background:#eef2f7;color:var(--ink)}
+  .btn-ghost:hover{background:#e2e8f0}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .chip{font-size:.8rem;padding:3px 10px;border-radius:999px;background:#eef2f7;
+       color:#334155;cursor:pointer;border:1px solid var(--line)}
+  .chip:hover{background:#e2e8f0}
+  .summary{display:flex;gap:14px;flex-wrap:wrap;font-size:.86rem;margin-bottom:4px}
+  .summary b{font-size:1.05rem}
+  .pill{padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:600}
+  .pill-ok{background:#dcfce7;color:#166534}
+  .pill-warn{background:var(--sev3-bg);color:var(--sev3)}
+  .pill-bad{background:var(--sev4-bg);color:var(--sev4)}
+  .recognized{font-size:.85rem;color:var(--muted);margin-top:8px}
+  .recognized span.tag{display:inline-block;background:#eef2f7;border-radius:6px;
+       padding:1px 8px;margin:2px 3px;color:#334155}
+  .unresolved span.tag{background:#fef2f2;color:#b91c1c}
+  .result{border-radius:12px;border:1px solid;padding:14px 16px;margin-bottom:12px}
+  .result.s4{background:var(--sev4-bg);border-color:var(--sev4-line)}
+  .result.s3{background:var(--sev3-bg);border-color:var(--sev3-line)}
+  .result h3{margin:0 0 4px;font-size:1.02rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sev-badge{font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:6px;color:#fff}
+  .s4 .sev-badge{background:var(--sev4)} .s3 .sev-badge{background:var(--sev3)}
+  .ddi-id{font-size:.74rem;color:var(--muted);font-weight:600}
+  .type-tag{font-size:.72rem;background:#e0e7ff;color:#3730a3;padding:1px 8px;border-radius:6px}
+  .result .involved{font-size:.82rem;color:var(--muted);margin:2px 0 8px}
+  .result .block{font-size:.9rem;margin:6px 0}
+  .result .block b{color:var(--ink)}
+  .empty{text-align:center;color:var(--muted);padding:24px}
+  footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:24px}
+  .legend{font-size:.8rem;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>💊 藥物交互作用檢核系統</h1>
+    <p>依據 Anrys et al. 2021, <i>JAMDA</i> —— 老年人潛在臨床顯著 DDI 國際共識清單 (66 條)</p>
+  </header>
+
+  <div class="disclaimer">
+    ⚠ <b>僅供臨床決策輔助與教育用途</b>：本清單標示的是「<b>潛在</b>」而非「絕對」的交互作用，
+    且針對 <b>≥65 歲</b>族群制定，非老年病人請審慎外推。本工具不涵蓋所有可能的 DDI，
+    不能取代完整用藥審查與專業判斷。藥物字典與商品名對應為<b>初版草稿</b>，臨床使用前請逐筆核對。
+  </div>
+
+  <div class="card">
+    <label class="field-label" for="drugs">輸入藥物清單</label>
+    <p class="hint">可輸入學名或台灣常見商品名（中英皆可）。每行一種，或用逗號 / 分號 / 頓號分隔。</p>
+    <textarea id="drugs" placeholder="範例：&#10;warfarin&#10;伯基&#10;Celebrex 希樂葆&#10;臟得樂"></textarea>
+    <div class="chips" id="quickChips"></div>
+    <div class="row">
+      <button class="btn-primary" id="checkBtn">檢核交互作用</button>
+      <button class="btn-ghost" id="clearBtn">清除</button>
+      <span class="legend" id="dictInfo"></span>
+    </div>
+  </div>
+
+  <div id="output"></div>
+
+  <footer>
+    資料來源：Anrys P, et al. An International Consensus List of Potentially Clinically Significant
+    Drug-Drug Interactions in Older People. <i>JAMDA</i>. 2021;22(11):2121-2133.<br>
+    v0.1 原型 · 藥物字典為草稿待審核
+  </footer>
+</div>
+
+<script src="data/ddi-rules.js"></script>
+<script src="data/drug-dictionary.js"></script>
+<script src="data/ddi-engine.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  const ta = $("drugs"), out = $("output");
+
+  $("dictInfo").textContent = `目前字典：${DRUGS.length} 種成分 · ${DDI_RULES.length} 條規則`;
+
+  // 快速範例
+  const examples = [
+    ["warfarin","阿斯匹靈","Celebrex 希樂葆"],
+    ["digoxin","clarithromycin"],
+    ["Stilnox 使蒂諾斯","quetiapine","tramadol"],
+    ["脈優","clarithromycin"],
+    ["威而鋼","硝化甘油 Nitrostat"],
+  ];
+  const chipBox = $("quickChips");
+  examples.forEach(ex=>{
+    const c=document.createElement("span");
+    c.className="chip"; c.textContent="例："+ex.join(" + ");
+    c.onclick=()=>{ ta.value=ex.join("\n"); run(); };
+    chipBox.appendChild(c);
+  });
+
+  function parseList(text){
+    return text.split(/[\n,，;；、]+/).map(s=>s.trim()).filter(Boolean);
+  }
+
+  function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+
+  function run(){
+    const list = parseList(ta.value);
+    if(!list.length){ out.innerHTML=`<div class="card empty">請先輸入至少一種藥物。</div>`; return; }
+    const res = DDIEngine.evaluate(list);
+
+    const nBad = res.hits.filter(h=>h.rule.severity>=4).length;
+    const nWarn = res.hits.filter(h=>h.rule.severity===3).length;
+
+    let html = `<div class="card">`;
+    html += `<div class="summary">
+        <span>命中交互作用：<b>${res.hits.length}</b> 條</span>
+        ${nBad?`<span class="pill pill-bad">重大 major ${nBad}</span>`:""}
+        ${nWarn?`<span class="pill pill-warn">中度 moderate ${nWarn}</span>`:""}
+        ${!res.hits.length?`<span class="pill pill-ok">未命中清單中的 DDI</span>`:""}
+      </div>`;
+    // 已辨識 / 未辨識
+    html += `<div class="recognized">已辨識 ${res.recognized.length} 種：`;
+    res.recognized.forEach(r=> html+=`<span class="tag">${esc(r.input)} → ${esc(r.drug.id)}</span>`);
+    html += `</div>`;
+    if(res.unresolved.length){
+      html += `<div class="recognized unresolved">⚠ 無法辨識（不在字典中，未納入比對）：`;
+      res.unresolved.forEach(u=> html+=`<span class="tag">${esc(u)}</span>`);
+      html += `</div>`;
+    }
+    html += `</div>`;
+
+    if(!res.hits.length){
+      html += `<div class="card empty">在已辨識的藥物中，未發現本共識清單所列的交互作用。<br>
+        <span class="legend">（注意：本清單非窮舉，未命中不代表絕對安全。）</span></div>`;
+    } else {
+      res.hits.forEach(h=>{
+        const s = h.rule.severity>=4 ? "s4":"s3";
+        const sevLabel = h.rule.severity>=4 ? "重大 Major":"中度 Moderate";
+        html += `<div class="result ${s}">
+          <h3>
+            <span class="sev-badge">${sevLabel}</span>
+            ${esc(h.rule.pair.join("  ＋  "))}
+            <span class="type-tag">${esc(h.rule.type)}</span>
+            <span class="ddi-id">${h.rule.id}</span>
+          </h3>
+          <div class="involved">涉及您輸入的藥物：${h.involved.map(esc).join("、")}</div>
+          <div class="block"><b>潛在危害：</b>${esc(h.rule.harm)}</div>
+          <div class="block"><b>建議處置：</b>${esc(h.rule.mgmt)}</div>
+        </div>`;
+      });
+    }
+    out.innerHTML = html;
+  }
+
+  $("checkBtn").onclick = run;
+  $("clearBtn").onclick = ()=>{ ta.value=""; out.innerHTML=""; ta.focus(); };
+  ta.addEventListener("keydown", e=>{ if(e.ctrlKey && e.key==="Enter") run(); });
+})();
+</script>
+</body>
+</html>
