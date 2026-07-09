@@ -170,6 +170,7 @@
             <span class="ddi-id">${h.rule.id}</span>
           </h3>
           <div class="involved">涉及您輸入的藥物：${h.involved.map(esc).join("、")}</div>
+          ${h.rule.showBurden?`<div class="block"><b>抗膽鹼負擔總分（Yamada ABS 加總）：</b>${h.burden} 分</div>`:""}
           <div class="block"><b>潛在危害：</b>${esc(h.rule.harm)}</div>
           <div class="block"><b>建議處置：</b>${esc(h.rule.mgmt)}</div>
         </div>`;

@@ -72,7 +72,7 @@ const DRUGS = [
   { id:"amiodarone", zh:"amiodarone", brands:["Cordarone 臟得樂"], classes:["cyp3a4_inhibitor","pgp_inhibitor","antiarrhythmic","rate_reducing"] },
   { id:"propafenone", zh:"propafenone", brands:["Rytmonorm"], classes:["antiarrhythmic","rate_reducing"] },
   { id:"quinidine", zh:"quinidine", brands:[], classes:["antiarrhythmic","cyp3a4_inhibitor","pgp_inhibitor","rate_reducing"] },
-  { id:"disopyramide", zh:"disopyramide", brands:["Norpace"], classes:["antiarrhythmic","rate_reducing","anticholinergic"] },
+  { id:"disopyramide", zh:"disopyramide", brands:["Norpace"], classes:["antiarrhythmic","rate_reducing","anticholinergic"], abs:3 },
   { id:"procainamide", zh:"procainamide", brands:["Pronestyl"], classes:["antiarrhythmic"] },
   { id:"dronedarone", zh:"dronedarone", brands:["Multaq"], classes:["cyp3a4_inhibitor","pgp_inhibitor","antiarrhythmic","rate_reducing"] },
   // 巨環類抗生素
@@ -131,25 +131,25 @@ const DRUGS = [
   // 鋰鹽
   { id:"lithium", zh:"lithium 鋰鹽", brands:["Lithonate"], classes:["mood_stabilizer"] },
   // SSRI
-  { id:"fluoxetine", zh:"fluoxetine", brands:["Prozac 百憂解"], classes:["ssri"] },
-  { id:"sertraline", zh:"sertraline", brands:["Zoloft 樂復得"], classes:["ssri"] },
-  { id:"paroxetine", zh:"paroxetine", brands:["Seroxat 克憂果"], classes:["ssri"] },
-  { id:"citalopram", zh:"citalopram", brands:["Cipram"], classes:["ssri"] },
-  { id:"escitalopram", zh:"escitalopram", brands:["Lexapro 立普能"], classes:["ssri"] },
-  { id:"fluvoxamine", zh:"fluvoxamine", brands:["Luvox 無鬱寧"], classes:["ssri"] },
+  { id:"fluoxetine", zh:"fluoxetine", brands:["Prozac 百憂解"], classes:["ssri","cns_active"] },
+  { id:"sertraline", zh:"sertraline", brands:["Zoloft 樂復得"], classes:["ssri","cns_active","anticholinergic"], abs:2 },
+  { id:"paroxetine", zh:"paroxetine", brands:["Seroxat 克憂果"], classes:["ssri","cns_active","anticholinergic"], abs:2 },
+  { id:"citalopram", zh:"citalopram", brands:["Cipram"], classes:["ssri","cns_active"] },
+  { id:"escitalopram", zh:"escitalopram", brands:["Lexapro 立普能"], classes:["ssri","cns_active"] },
+  { id:"fluvoxamine", zh:"fluvoxamine", brands:["Luvox 無鬱寧"], classes:["ssri","cns_active"] },
   // SNRI
-  { id:"venlafaxine", zh:"venlafaxine", brands:["Efexor 速悅"], classes:["snri"] },
-  { id:"duloxetine", zh:"duloxetine", brands:["Cymbalta 千憂解"], classes:["snri"] },
-  { id:"desvenlafaxine", zh:"desvenlafaxine", brands:["Pristiq"], classes:["snri"] },
-  { id:"milnacipran", zh:"milnacipran", brands:["Ixel"], classes:["snri"] },
+  { id:"venlafaxine", zh:"venlafaxine", brands:["Efexor 速悅"], classes:["snri","cns_active"] },
+  { id:"duloxetine", zh:"duloxetine", brands:["Cymbalta 千憂解"], classes:["snri","cns_active"] },
+  { id:"desvenlafaxine", zh:"desvenlafaxine", brands:["Pristiq"], classes:["snri","cns_active"] },
+  { id:"milnacipran", zh:"milnacipran", brands:["Ixel"], classes:["snri","cns_active"] },
   // TCA (亦具抗膽鹼作用)
-  { id:"amitriptyline", zh:"amitriptyline", brands:["Elavil"], classes:["tca","anticholinergic","cns_active"] },
-  { id:"nortriptyline", zh:"nortriptyline", brands:["Pamelor"], classes:["tca","anticholinergic","cns_active"] },
-  { id:"imipramine", zh:"imipramine", brands:["Tofranil"], classes:["tca","anticholinergic","cns_active"] },
-  { id:"clomipramine", zh:"clomipramine", brands:["Anafranil"], classes:["tca","anticholinergic","cns_active"] },
-  { id:"doxepin", zh:"doxepin", brands:["Sinequan"], classes:["tca","anticholinergic","cns_active"] },
+  { id:"amitriptyline", zh:"amitriptyline", brands:["Elavil"], classes:["tca","anticholinergic","cns_active"], abs:3 },
+  { id:"nortriptyline", zh:"nortriptyline", brands:["Pamelor"], classes:["tca","anticholinergic","cns_active"], abs:3 },
+  { id:"imipramine", zh:"imipramine", brands:["Tofranil"], classes:["tca","anticholinergic","cns_active"], abs:3 },
+  { id:"clomipramine", zh:"clomipramine", brands:["Anafranil"], classes:["tca","anticholinergic","cns_active"], abs:3 },
+  { id:"doxepin", zh:"doxepin", brands:["Sinequan"], classes:["tca","anticholinergic","cns_active"], abs:3 },
   // 其他血清素能 / 抗憂鬱
-  { id:"mirtazapine", zh:"mirtazapine", brands:["Remeron 樂活優"], classes:["other_antidep","serotonergic_other","cns_active"] },
+  { id:"mirtazapine", zh:"mirtazapine", brands:["Remeron 樂活優"], classes:["other_antidep","serotonergic_other","cns_active","anticholinergic"], abs:2 },
   { id:"trazodone", zh:"trazodone", brands:["Mesyrel 美舒鬱"], classes:["other_antidep","serotonergic_other","cns_active"] },
   { id:"bupropion", zh:"bupropion", brands:["Wellbutrin 威克倓"], classes:["other_antidep","cns_active"] },
   { id:"sumatriptan", zh:"sumatriptan (triptan)", brands:["Imigran"], classes:["serotonergic_other"] },
@@ -169,7 +169,7 @@ const DRUGS = [
   { id:"pseudoephedrine", zh:"pseudoephedrine 偽麻黃鹼", brands:["感冒藥常見成分"], classes:["sympathomimetic"] },
   { id:"phenylephrine", zh:"phenylephrine", brands:["感冒藥常見成分"], classes:["sympathomimetic"] },
   { id:"ephedrine", zh:"ephedrine", brands:[], classes:["sympathomimetic"] },
-  { id:"methylphenidate", zh:"methylphenidate", brands:["Ritalin 利他能","Concerta 專思達"], classes:["sympathomimetic","cns_active"] },
+  { id:"methylphenidate", zh:"methylphenidate", brands:["Ritalin 利他能","Concerta 專思達"], classes:["sympathomimetic"] },
   // 鴉片類
   { id:"meperidine", zh:"meperidine/pethidine 配西汀", brands:["Demerol"], classes:["opioid","cns_active","serotonergic_other"] },
   { id:"fentanyl", zh:"fentanyl", brands:["Durogesic 吩坦尼"], classes:["opioid","cns_active","serotonergic_other"] },
@@ -186,7 +186,7 @@ const DRUGS = [
   { id:"levetiracetam", zh:"levetiracetam", brands:["Keppra"], classes:["antiepileptic","cns_active"] },
   { id:"phenobarbital", zh:"phenobarbital", brands:["Luminal"], classes:["barbiturate","cns_active"] },
   // 乙醯膽鹼酯酶抑制劑
-  { id:"donepezil", zh:"donepezil", brands:["Aricept 愛憶欣"], classes:["ache_inhibitor"] },
+  { id:"donepezil", zh:"donepezil", brands:["Aricept 愛憶欣"], classes:["ache_inhibitor","anticholinergic"], abs:2 },
   { id:"rivastigmine", zh:"rivastigmine", brands:["Exelon 憶思能"], classes:["ache_inhibitor"] },
   { id:"galantamine", zh:"galantamine", brands:["Reminyl 利憶靈"], classes:["ache_inhibitor"] },
   // Theophylline
@@ -203,15 +203,16 @@ const DRUGS = [
   { id:"hydrocortisone", zh:"hydrocortisone", brands:[], classes:["corticosteroid","potassium_reducing"] },
   { id:"betamethasone", zh:"betamethasone", brands:[], classes:["corticosteroid","potassium_reducing"] },
   // 抗膽鹼藥 (DDI-57 計數)
-  { id:"oxybutynin", zh:"oxybutynin", brands:["Ditropan"], classes:["anticholinergic"] },
-  { id:"tolterodine", zh:"tolterodine", brands:["Detrusitol"], classes:["anticholinergic"] },
-  { id:"solifenacin", zh:"solifenacin", brands:["Vesicare"], classes:["anticholinergic"] },
-  { id:"diphenhydramine", zh:"diphenhydramine", brands:["Benadryl"], classes:["anticholinergic","cns_active"] },
-  { id:"chlorpheniramine", zh:"chlorpheniramine 氯芬尼拉明", brands:["感冒藥常見成分"], classes:["anticholinergic"] },
-  { id:"hydroxyzine", zh:"hydroxyzine", brands:["Atarax"], classes:["anticholinergic"] },
-  { id:"scopolamine", zh:"scopolamine/hyoscine", brands:["Buscopan 補斯可胖"], classes:["anticholinergic"] },
-  { id:"benztropine", zh:"benztropine", brands:["Cogentin"], classes:["anticholinergic"] },
-  { id:"trihexyphenidyl", zh:"trihexyphenidyl", brands:["Artane"], classes:["anticholinergic"] },
+  { id:"oxybutynin", zh:"oxybutynin", brands:["Ditropan"], classes:["anticholinergic"], abs:3 },
+  { id:"tolterodine", zh:"tolterodine", brands:["Detrusitol"], classes:["anticholinergic"], abs:3 },
+  { id:"solifenacin", zh:"solifenacin", brands:["Vesicare"], classes:["anticholinergic"], abs:3 },
+  { id:"diphenhydramine", zh:"diphenhydramine", brands:["Benadryl"], classes:["anticholinergic"], abs:3 },
+  { id:"chlorpheniramine", zh:"chlorpheniramine 氯芬尼拉明", brands:["感冒藥常見成分"], classes:["anticholinergic"], abs:2 },
+  { id:"hydroxyzine", zh:"hydroxyzine", brands:["Atarax"], classes:["anticholinergic"], abs:2 },
+  { id:"scopolamine", zh:"scopolamine/hyoscine hydrobromide", brands:["Scopoderm 貼片"], classes:["anticholinergic"], abs:3 },
+  { id:"butylscopolamine", zh:"hyoscine butylbromide (butylscopolamine)", brands:["Buscopan 補斯可胖"], classes:["anticholinergic"], abs:2 },
+  { id:"benztropine", zh:"benztropine", brands:["Cogentin"], classes:["anticholinergic"], abs:3 },
+  { id:"trihexyphenidyl", zh:"trihexyphenidyl", brands:["Artane"], classes:["anticholinergic"], abs:3 },
   // BZD / Z-drug (cns_active;DDI-37 指定成分)
   { id:"alprazolam", zh:"alprazolam", brands:["Xanax 贊安諾"], classes:["benzodiazepine","cns_active"] },
   { id:"diazepam", zh:"diazepam", brands:["Valium"], classes:["benzodiazepine","cns_active"] },
@@ -224,9 +225,9 @@ const DRUGS = [
   { id:"zopiclone", zh:"zopiclone", brands:["Imovane"], classes:["zdrug","cns_active"] },
   // 抗精神病 (cns_active)
   { id:"haloperidol", zh:"haloperidol", brands:["Haldol"], classes:["antipsychotic","cns_active"] },
-  { id:"quetiapine", zh:"quetiapine", brands:["Seroquel 思樂康"], classes:["antipsychotic","cns_active"] },
+  { id:"quetiapine", zh:"quetiapine", brands:["Seroquel 思樂康"], classes:["antipsychotic","cns_active","anticholinergic"], abs:3 },
   { id:"risperidone", zh:"risperidone", brands:["Risperdal 理思必妥"], classes:["antipsychotic","cns_active"] },
-  { id:"olanzapine", zh:"olanzapine", brands:["Zyprexa 金普薩"], classes:["antipsychotic","cns_active","anticholinergic"] },
+  { id:"olanzapine", zh:"olanzapine", brands:["Zyprexa 金普薩"], classes:["antipsychotic","cns_active","anticholinergic"], abs:3 },
   { id:"sulpiride", zh:"sulpiride", brands:["Dogmatyl"], classes:["antipsychotic","cns_active"] },
   // PDE5 抑制劑
   { id:"sildenafil", zh:"sildenafil", brands:["Viagra 威而鋼","Revatio"], classes:["pde5_inhibitor"] },
@@ -254,6 +255,29 @@ const DRUGS = [
   { id:"salmeterol", zh:"salmeterol", brands:["Serevent"], classes:["b2_agonist","potassium_reducing"] },
   { id:"formoterol", zh:"formoterol", brands:["Oxis"], classes:["b2_agonist","potassium_reducing"] },
   { id:"terbutaline", zh:"terbutaline", brands:["Bricanyl"], classes:["b2_agonist","potassium_reducing"] },
+
+  // ===== 抗膽鹼藥擴充 (Yamada 2023 ABS 量表, DDI-57 用 ABS>=2 計數) =====
+  // abs = Yamada muscarinic-binding 抗膽鹼負擔分數 (3=明顯, 2=中度)
+  // ABS 3
+  { id:"promethazine", zh:"promethazine", brands:["Phenergan 非那根"], classes:["anticholinergic"], abs:3 },
+  { id:"cyproheptadine", zh:"cyproheptadine", brands:["Periactin"], classes:["anticholinergic"], abs:3 },
+  { id:"dicyclomine", zh:"dicyclomine/dicycloverine", brands:["Bentyl"], classes:["anticholinergic"], abs:3 },
+  { id:"hyoscyamine", zh:"hyoscyamine", brands:["Levsin"], classes:["anticholinergic"], abs:3 },
+  { id:"fesoterodine", zh:"fesoterodine", brands:["Toviaz"], classes:["anticholinergic"], abs:3 },
+  { id:"darifenacin", zh:"darifenacin", brands:["Enablex"], classes:["anticholinergic"], abs:3 },
+  { id:"propiverine", zh:"propiverine", brands:["BUP-4"], classes:["anticholinergic"], abs:3 },
+  { id:"atropine", zh:"atropine", brands:["Atropine"], classes:["anticholinergic"], abs:3 },
+  { id:"biperiden", zh:"biperiden", brands:["Akineton"], classes:["anticholinergic"], abs:3 },
+  { id:"clozapine", zh:"clozapine", brands:["Clozaril 可致律"], classes:["antipsychotic","cns_active","anticholinergic"], abs:3 },
+  // ABS 2
+  { id:"chlorpromazine", zh:"chlorpromazine", brands:["Wintermin 溫特敏"], classes:["antipsychotic","cns_active","anticholinergic"], abs:2 },
+  { id:"prochlorperazine", zh:"prochlorperazine", brands:["Novamin"], classes:["antipsychotic","anticholinergic"], abs:2 },
+  { id:"dimenhydrinate", zh:"dimenhydrinate", brands:["Dramamine 暈車藥"], classes:["anticholinergic"], abs:2 },
+  { id:"amoxapine", zh:"amoxapine", brands:["Asendin"], classes:["other_antidep","cns_active","anticholinergic"], abs:2 },
+  { id:"maprotiline", zh:"maprotiline", brands:["Ludiomil"], classes:["other_antidep","cns_active","anticholinergic"], abs:2 },
+  // 吸入/局部劑型: Yamada 有評分但全身性中樞負擔低,依決策【不納入 DDI-57 計數】(故不給 anticholinergic 類別,僅記錄 abs 供參考)
+  { id:"tiotropium", zh:"tiotropium (吸入)", brands:["Spiriva 適喘樂"], classes:[], abs:2, route:"inhaled" },
+  { id:"ipratropium", zh:"ipratropium (吸入)", brands:["Atrovent"], classes:[], abs:2, route:"inhaled" },
 ];
 
 if (typeof module !== "undefined") module.exports = { DRUGS, CLASS_TREE };

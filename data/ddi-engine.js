@@ -118,7 +118,8 @@
       if (countP) {
         const members = recognized.filter((r) => drugHasClass(r.drug, countP.count.cls));
         if (members.length >= countP.count.min) {
-          hits.push({ rule, drugs: members.map((m) => m.drug), involved: members.map((m) => m.input) });
+          const burden = members.reduce((s, m) => s + (m.drug.abs || 0), 0);
+          hits.push({ rule, drugs: members.map((m) => m.drug), involved: members.map((m) => m.input), burden });
         }
         return;
       }

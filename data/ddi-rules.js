@@ -251,7 +251,7 @@ const DDI_RULES = [
     participants:[{cls:"corticosteroid"},{cls:"nsaid_oral"}],
     harm:"腸胃道潰瘍或出血。",
     mgmt:"考慮加胃保護藥(PPI、H2 拮抗劑);衛教回報腹痛、黑便等出血徵象。" },
-  { id:"DDI-57", pair:["併用 ≥2 種抗膽鹼藥物"], type:"PD", severity:3,
+  { id:"DDI-57", pair:["併用 ≥2 種抗膽鹼藥物"], type:"PD", severity:3, showBurden:true,
     participants:[{count:{cls:"anticholinergic", min:2}}],
     harm:"累加之抗膽鹼作用含認知功能下降。",
     mgmt:"盡量減少抗膽鹼藥數量,考慮非抗膽鹼替代;密切監測口乾、視力模糊、尿滯留、意識混亂等。" },
