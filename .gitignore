@@ -6,6 +6,9 @@
 Thumbs.db
 desktop.ini
 
+# Claude Code 本機個人設定（權限等，不進版控）
+.claude/settings.local.json
+
 # 編輯器 / 相依套件
 node_modules/
 .vscode/
