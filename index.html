@@ -26,6 +26,23 @@
   textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;
        padding:10px 12px;font-size:.95rem;font-family:inherit;resize:vertical}
   textarea:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .tagwrap{position:relative}
+  .tag-field{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border:1px solid var(--line);
+       border-radius:10px;padding:8px;min-height:50px;cursor:text;background:#fff}
+  .tag-field.focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+  .tg{display:inline-flex;align-items:center;gap:4px;background:#eef2f7;border:1px solid var(--line);
+       border-radius:8px;padding:3px 4px 3px 10px;font-size:.88rem;color:#334155}
+  .tg.unknown{background:var(--sev4-bg);border-color:var(--sev4-line);color:#b91c1c}
+  .tg .x{cursor:pointer;font-weight:700;opacity:.5;padding:0 4px}
+  .tg .x:hover{opacity:1}
+  #tagInput{border:0;outline:none;flex:1;min-width:150px;font-size:.95rem;font-family:inherit;padding:4px;background:transparent}
+  .suggest-box{position:absolute;left:0;right:0;top:100%;z-index:30;background:#fff;border:1px solid var(--line);
+       border-radius:10px;margin-top:4px;box-shadow:0 8px 24px rgba(16,24,40,.14);max-height:300px;overflow:auto;display:none}
+  .suggest-box.open{display:block}
+  .sugg{padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+  .sugg.active{background:#eff4ff}
+  .sugg .nm{font-size:.92rem}
+  .sugg .sub{color:var(--muted);font-size:.78rem;text-align:right;flex-shrink:0;max-width:55%}
   .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
   button{border:0;border-radius:10px;padding:10px 20px;font-size:.95rem;font-weight:600;
        cursor:pointer;font-family:inherit}
@@ -77,9 +94,14 @@
   </div>
 
   <div class="card">
-    <label class="field-label" for="drugs">輸入藥物清單</label>
-    <p class="hint">可輸入學名或台灣常見商品名（中英皆可）。每行一種，或用逗號 / 分號 / 頓號分隔。</p>
-    <textarea id="drugs" placeholder="範例：&#10;warfarin&#10;伯基&#10;Celebrex 希樂葆&#10;臟得樂"></textarea>
+    <label class="field-label" for="tagInput">輸入藥物清單</label>
+    <p class="hint">開始打字會出現建議（學名／中文／台灣商品名皆可搜）；按 Enter 或點選加入。也可一次貼上多筆（逗號 / 換行 / 頓號分隔）。</p>
+    <div class="tagwrap">
+      <div id="tagField" class="tag-field">
+        <input id="tagInput" type="text" autocomplete="off" placeholder="輸入藥名…例如 warfarin、脈優、Celebrex">
+      </div>
+      <div id="suggestBox" class="suggest-box"></div>
+    </div>
     <div class="chips" id="quickChips"></div>
     <div class="row">
       <button class="btn-primary" id="checkBtn">檢核交互作用</button>
@@ -103,9 +125,80 @@
 <script>
 (function(){
   const $ = (id) => document.getElementById(id);
-  const ta = $("drugs"), out = $("output");
+  const out = $("output");
+  const field = $("tagField"), input = $("tagInput"), sbox = $("suggestBox");
 
   $("dictInfo").textContent = `目前字典：${DRUGS.length} 種成分 · ${DDI_RULES.length} 條規則`;
+
+  let terms = [];          // 已加入的藥 (字串)
+  let suggestions = [];    // 目前建議清單
+  let active = -1;         // 反白的建議
+
+  function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+  function resolve(t){ return DDIEngine.resolveOne(t); }
+
+  function renderChips(){
+    [...field.querySelectorAll(".tg")].forEach(n=>n.remove());
+    terms.forEach((t,i)=>{
+      const drug = resolve(t);
+      const el = document.createElement("span");
+      el.className = "tg" + (drug?"":" unknown");
+      el.innerHTML = `<span>${esc(drug?drug.zh:t)}${drug?"":" ⚠"}</span><span class="x" data-i="${i}">×</span>`;
+      field.insertBefore(el, input);
+    });
+    field.querySelectorAll(".x").forEach(x=> x.onclick=(e)=>{
+      e.stopPropagation(); terms.splice(+x.dataset.i,1); renderChips(); input.focus();
+    });
+  }
+
+  function addTerm(t){ t=String(t).trim(); if(t){ terms.push(t); } input.value=""; closeSuggest(); renderChips(); }
+  function addMany(text){
+    text.split(/[\n,，;；、]+/).map(s=>s.trim()).filter(Boolean).forEach(t=>terms.push(t));
+    input.value=""; closeSuggest(); renderChips();
+  }
+
+  function closeSuggest(){ sbox.classList.remove("open"); sbox.innerHTML=""; active=-1; suggestions=[]; }
+  function highlight(){
+    [...sbox.querySelectorAll(".sugg")].forEach((el,i)=>el.classList.toggle("active",i===active));
+    const a=sbox.querySelector(".sugg.active"); if(a) a.scrollIntoView({block:"nearest"});
+  }
+  function openSuggest(){
+    const q = input.value.trim();
+    if(!q){ closeSuggest(); return; }
+    suggestions = DDIEngine.suggest(q, 8);
+    if(!suggestions.length){ closeSuggest(); return; }
+    active = 0;
+    sbox.innerHTML = suggestions.map((d,i)=>{
+      const sub = (d.brands||[]).join("、") || d.id;
+      return `<div class="sugg${i===0?" active":""}" data-i="${i}"><span class="nm">${esc(d.zh)}</span><span class="sub">${esc(sub)}</span></div>`;
+    }).join("");
+    sbox.classList.add("open");
+    sbox.querySelectorAll(".sugg").forEach(el=> el.onmousedown=(e)=>{ e.preventDefault(); pick(+el.dataset.i); });
+  }
+  function pick(i){ const d=suggestions[i]; if(d) addTerm(d.id); input.focus(); }
+
+  input.addEventListener("input", openSuggest);
+  input.addEventListener("focus", ()=> field.classList.add("focus"));
+  input.addEventListener("blur", ()=>{ field.classList.remove("focus"); setTimeout(closeSuggest,150); });
+  field.addEventListener("mousedown", (e)=>{ if(e.target===field) input.focus(); });
+  input.addEventListener("paste",(e)=>{
+    const txt=(e.clipboardData||window.clipboardData).getData("text");
+    if(/[\n,，;；、]/.test(txt)){ e.preventDefault(); addMany(txt); }
+  });
+  input.addEventListener("keydown",(e)=>{
+    const open = sbox.classList.contains("open");
+    if(e.key==="ArrowDown" && open){ e.preventDefault(); active=(active+1)%suggestions.length; highlight(); }
+    else if(e.key==="ArrowUp" && open){ e.preventDefault(); active=(active-1+suggestions.length)%suggestions.length; highlight(); }
+    else if(e.key==="Escape"){ closeSuggest(); }
+    else if(e.key==="Enter"){
+      e.preventDefault();
+      if(open && active>=0) pick(active);
+      else if(input.value.trim()) addTerm(input.value);
+      else run();
+    }
+    else if(e.key===","||e.key==="，"||e.key==="、"||e.key===";"){ e.preventDefault(); if(input.value.trim()) addTerm(input.value); }
+    else if(e.key==="Backspace" && !input.value && terms.length){ terms.pop(); renderChips(); }
+  });
 
   // 快速範例
   const examples = [
@@ -119,18 +212,13 @@
   examples.forEach(ex=>{
     const c=document.createElement("span");
     c.className="chip"; c.textContent="例："+ex.join(" + ");
-    c.onclick=()=>{ ta.value=ex.join("\n"); run(); };
+    c.onclick=()=>{ terms=ex.slice(); renderChips(); run(); };
     chipBox.appendChild(c);
   });
 
-  function parseList(text){
-    return text.split(/[\n,，;；、]+/).map(s=>s.trim()).filter(Boolean);
-  }
-
-  function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
-
   function run(){
-    const list = parseList(ta.value);
+    if(input.value.trim()) addTerm(input.value);
+    const list = terms.slice();
     if(!list.length){ out.innerHTML=`<div class="card empty">請先輸入至少一種藥物。</div>`; return; }
     const res = DDIEngine.evaluate(list);
 
@@ -181,8 +269,7 @@
   }
 
   $("checkBtn").onclick = run;
-  $("clearBtn").onclick = ()=>{ ta.value=""; out.innerHTML=""; ta.focus(); };
-  ta.addEventListener("keydown", e=>{ if(e.ctrlKey && e.key==="Enter") run(); });
+  $("clearBtn").onclick = ()=>{ terms=[]; input.value=""; renderChips(); out.innerHTML=""; input.focus(); };
 })();
 </script>
 </body>

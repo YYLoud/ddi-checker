@@ -136,5 +136,38 @@
     return { recognized, unresolved, hits };
   }
 
-  global.DDIEngine = { evaluate, parseInput };
+  // ---- 自動完成建議 ----
+  // 回傳與 query 相符的藥物 (依相關度排序): 前綴 > 子字串
+  function suggest(query, limit) {
+    limit = limit || 8;
+    const q = norm(query);
+    if (!q) return [];
+    const seen = new Set();
+    const scored = [];
+    DRUGS.forEach((d) => {
+      const labels = [norm(d.id)];
+      norm(d.zh).split(/[\/,()（）]| /).forEach((p) => { if (p) labels.push(p); });
+      (d.brands || []).forEach((b) => brandKeys(b).forEach((k) => { if (k) labels.push(k); }));
+      let best = Infinity;
+      for (const l of labels) {
+        const idx = l.indexOf(q);
+        if (idx === 0) { best = 0; break; }
+        if (idx > 0) best = Math.min(best, 1);
+      }
+      if (best < Infinity && !seen.has(d.id)) {
+        seen.add(d.id);
+        scored.push({ d, best });
+      }
+    });
+    scored.sort((a, b) => a.best - b.best || a.d.id.localeCompare(b.d.id));
+    return scored.slice(0, limit).map((s) => s.d);
+  }
+
+  // 解析單一詞 → drug 或 null
+  function resolveOne(term) {
+    const r = parseInput([term]);
+    return r.recognized.length ? r.recognized[0].drug : null;
+  }
+
+  global.DDIEngine = { evaluate, parseInput, suggest, resolveOne };
 })(typeof window !== "undefined" ? window : globalThis);
