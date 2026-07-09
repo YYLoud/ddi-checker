@@ -285,6 +285,26 @@ const DRUGS = [
     note:"備註:Yamada ABS2,但 mirabegron 為 β3 促效劑,臨床上正是用來取代抗膽鹼藥治療膀胱過動症,故刻意不計入抗膽鹼負擔。" },
   { id:"vibegron", zh:"vibegron (β3 促效劑)", brands:["Gemtesa"], classes:[], abs:2,
     note:"備註:同 mirabegron,β3 促效劑,刻意不計入抗膽鹼負擔。" },
+
+  // ===== DDI-21 留鉀藥擴充 (2026-07-09 審核) =====
+  { id:"sacubitril-valsartan", zh:"sacubitril/valsartan (ARNI)", brands:["Entresto 健安心"], classes:["arb","potassium_sparing"],
+    note:"備註:ARNI 含 ARB 成分 valsartan,升鉀機轉同 ARB;亦適用 ACEI/ARB 相關規則(如與 NSAID、lithium)。" },
+  { id:"aliskiren", zh:"aliskiren (直接腎素抑制劑)", brands:["Rasilez"], classes:["potassium_sparing"],
+    note:"備註:作用於 RAAS,升鉀風險類似 ACEI/ARB;文章 DDI-21 未明列,依審核納入。" },
+  { id:"dexketoprofen", zh:"dexketoprofen", brands:["Keral"], classes:["nsaid_oral","potassium_sparing"] },
+  { id:"aceclofenac", zh:"aceclofenac", brands:["Airtal"], classes:["nsaid_oral","potassium_sparing"] },
+  { id:"nabumetone", zh:"nabumetone", brands:["Relifex"], classes:["nsaid_oral","potassium_sparing"] },
+  { id:"sulindac", zh:"sulindac", brands:["Clinoril"], classes:["nsaid_oral","potassium_sparing"] },
+  { id:"lornoxicam", zh:"lornoxicam", brands:["Xefo"], classes:["nsaid_oral","potassium_sparing"] },
+  { id:"tenoxicam", zh:"tenoxicam", brands:["Tilcotil"], classes:["nsaid_oral","potassium_sparing"] },
+
+  // ===== DDI-65 降鉀藥擴充 (2026-07-09 審核) =====
+  { id:"fludrocortisone", zh:"fludrocortisone (礦物質皮質類固醇)", brands:["Florinef"], classes:["corticosteroid","potassium_reducing"],
+    note:"備註:強效礦物質皮質作用,降鉀較一般類固醇明顯。" },
+  { id:"indacaterol", zh:"indacaterol (吸入 LABA)", brands:["Onbrez"], classes:["b2_agonist","potassium_reducing"] },
+  { id:"vilanterol", zh:"vilanterol (吸入 LABA)", brands:["Relvar/Anoro 含成分"], classes:["b2_agonist","potassium_reducing"] },
+  { id:"olodaterol", zh:"olodaterol (吸入 LABA)", brands:["Striverdi"], classes:["b2_agonist","potassium_reducing"] },
+  { id:"procaterol", zh:"procaterol", brands:["Meptin 美喘清"], classes:["b2_agonist","potassium_reducing"] },
 ];
 
 if (typeof module !== "undefined") module.exports = { DRUGS, CLASS_TREE };
