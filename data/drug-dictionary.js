@@ -132,7 +132,8 @@ const DRUGS = [
   { id:"lithium", zh:"lithium 鋰鹽", brands:["Lithonate"], classes:["mood_stabilizer"] },
   // SSRI
   { id:"fluoxetine", zh:"fluoxetine", brands:["Prozac 百憂解"], classes:["ssri","cns_active"] },
-  { id:"sertraline", zh:"sertraline", brands:["Zoloft 樂復得"], classes:["ssri","cns_active","anticholinergic"], abs:2 },
+  { id:"sertraline", zh:"sertraline", brands:["Zoloft 樂復得"], classes:["ssri","cns_active","anticholinergic"], abs:2,
+    note:"備註:sertraline 依 Yamada ABS2 已納入抗膽鹼負擔計數,惟多數其他量表(如 ACB)評為低/0,屬邊界藥物。" },
   { id:"paroxetine", zh:"paroxetine", brands:["Seroxat 克憂果"], classes:["ssri","cns_active","anticholinergic"], abs:2 },
   { id:"citalopram", zh:"citalopram", brands:["Cipram"], classes:["ssri","cns_active"] },
   { id:"escitalopram", zh:"escitalopram", brands:["Lexapro 立普能"], classes:["ssri","cns_active"] },
@@ -186,7 +187,8 @@ const DRUGS = [
   { id:"levetiracetam", zh:"levetiracetam", brands:["Keppra"], classes:["antiepileptic","cns_active"] },
   { id:"phenobarbital", zh:"phenobarbital", brands:["Luminal"], classes:["barbiturate","cns_active"] },
   // 乙醯膽鹼酯酶抑制劑
-  { id:"donepezil", zh:"donepezil", brands:["Aricept 愛憶欣"], classes:["ache_inhibitor","anticholinergic"], abs:2 },
+  { id:"donepezil", zh:"donepezil", brands:["Aricept 愛憶欣"], classes:["ache_inhibitor","anticholinergic"], abs:2,
+    note:"備註:donepezil 為乙醯膽鹼酯酶抑制劑(促膽鹼),依 Yamada muscarinic 結合 ABS2 已納入抗膽鹼負擔計數,但臨床上與抗膽鹼藥併用屬藥效對抗,判讀時併同考量。" },
   { id:"rivastigmine", zh:"rivastigmine", brands:["Exelon 憶思能"], classes:["ache_inhibitor"] },
   { id:"galantamine", zh:"galantamine", brands:["Reminyl 利憶靈"], classes:["ache_inhibitor"] },
   // Theophylline
@@ -278,6 +280,11 @@ const DRUGS = [
   // 吸入/局部劑型: Yamada 有評分但全身性中樞負擔低,依決策【不納入 DDI-57 計數】(故不給 anticholinergic 類別,僅記錄 abs 供參考)
   { id:"tiotropium", zh:"tiotropium (吸入)", brands:["Spiriva 適喘樂"], classes:[], abs:2, route:"inhaled" },
   { id:"ipratropium", zh:"ipratropium (吸入)", brands:["Atrovent"], classes:[], abs:2, route:"inhaled" },
+  // β3 促效劑 (膀胱過動症): Yamada muscarinic 結合評 ABS2,但臨床上為抗膽鹼「替代藥」,依決策【刻意不納入 DDI-57 計數】
+  { id:"mirabegron", zh:"mirabegron (β3 促效劑)", brands:["Betmiga 貝坦利"], classes:[], abs:2,
+    note:"備註:Yamada ABS2,但 mirabegron 為 β3 促效劑,臨床上正是用來取代抗膽鹼藥治療膀胱過動症,故刻意不計入抗膽鹼負擔。" },
+  { id:"vibegron", zh:"vibegron (β3 促效劑)", brands:["Gemtesa"], classes:[], abs:2,
+    note:"備註:同 mirabegron,β3 促效劑,刻意不計入抗膽鹼負擔。" },
 ];
 
 if (typeof module !== "undefined") module.exports = { DRUGS, CLASS_TREE };
