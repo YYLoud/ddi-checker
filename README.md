@@ -1,5 +1,8 @@
 # 藥物交互作用檢核系統 (DDI Checker)
 
+> ## ⚠️ 研究／教育用途 — 尚未經完整臨床驗證
+> 本工具為**開發中原型**，僅供研究與教育參考。藥物字典與台灣商品名對應為**初版草稿、尚未經正式臨床審查**；比對結果為「**潛在**」而非「絕對」的交互作用，且規則針對 **≥65 歲**族群制定。**請勿**單獨依賴本工具做臨床用藥決策，任何實際處置務必由合格藥師／醫師判斷。使用即表示您理解並接受上述限制。
+
 輸入多種藥物（學名或台灣常見商品名），自動比對是否存在潛在臨床顯著的藥物交互作用（Drug-Drug Interaction, DDI）。
 
 ## 依據來源
@@ -8,10 +11,14 @@
 
 > Anrys P, Petit AE, Thevelin S, et al. **An International Consensus List of Potentially Clinically Significant Drug-Drug Interactions in Older People.** *JAMDA*. 2021;22(11):2121-2133. doi:10.1016/j.jamda.2021.03.019
 
+其中抗膽鹼藥（DDI-57）的成員與負擔分數採用：
+
+> Yamada S, et al. **Development of a pharmacological evidence-based anticholinergic burden scale.** *Geriatr Gerontol Int*. 2023;23(7). doi:10.1111/ggi.14619
+
 ## 使用方式
 
 以瀏覽器開啟 `index.html` 即可（純前端、本機執行，無需伺服器）。
-於欄位輸入藥物清單（每行一種，或用逗號／分號／頓號分隔），按「檢核交互作用」。
+在輸入框輸入藥名，會即時跳出建議（學名／中文／台灣商品名皆可搜），按 Enter 或點選加入；也可一次貼上多筆（逗號／換行／頓號分隔），再按「檢核交互作用」。
 
 ## 專案結構
 
@@ -39,4 +46,4 @@
 
 ## 版本
 
-v0.1 原型
+v0.2 原型 — 66 條規則、約 230 種成分（草稿字典）、輸入自動完成；四個計數型規則（DDI-21/36/57/65）已依文獻審核。
